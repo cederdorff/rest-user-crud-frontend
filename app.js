@@ -4,9 +4,8 @@ const endpoint = "http://localhost:3000";
 // === READ (GET) === //
 async function getUsers() {
     const res = await fetch(`${endpoint}/users`);
-    const data = await res.json();
-    const userList = Object.keys(data).map(key => ({ id: key, ...data[key] })); // from object to array
-    return userList;
+    const users = await res.json();
+    return users;
 }
 
 async function getUser(id) {
@@ -16,19 +15,30 @@ async function getUser(id) {
 }
 
 // === CREATE (POST) === //
-async function createUser(name, mail, image) {
-    const newUser = { name, mail, image };
-    const userAsJson = JSON.stringify(newUser);
-    const res = await fetch(`${endpoint}/users`, { method: "POST", body: userAsJson });
+async function createUser(user) {
+    const userAsJson = JSON.stringify(user);
+    const res = await fetch(`${endpoint}/users`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: userAsJson
+    });
     console.log(res);
 }
 
 // === UPDATE (PUT) === //
-async function updateUser(id, name, mail, image) {
-    const userToUpdate = { name, mail, image };
-    const userAsJson = JSON.stringify(userToUpdate);
-    const res = await fetch(`${endpoint}/users/${id}`, { method: "PUT", body: userAsJson });
-    console.log(res);
+async function updateUser(user) {
+    const userAsJson = JSON.stringify(user);
+    const res = await fetch(`${endpoint}/users/${user.id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: userAsJson
+    });
+    const data = await res.json();
+    console.log(data);
 }
 
 // === DELETE (DELETE) === //
@@ -87,6 +97,7 @@ function addUserClickEvents() {
                 const user = await getUser(selectedUserId);
                 const form = document.querySelector("#form-update");
                 form.name.value = user.name;
+                form.title.value = user.title;
                 form.mail.value = user.mail;
                 form.image.value = user.image;
                 form.scrollIntoView({ behavior: "smooth" });
@@ -98,9 +109,10 @@ function createSubmitEvent() {
     document.querySelector("#form-create").onsubmit = async event => {
         event.preventDefault();
         const name = event.target.name.value;
+        const title = event.target.title.value;
         const mail = event.target.mail.value;
         const image = event.target.image.value;
-        await createUser(name, mail, image);
+        await createUser({ name, title, mail, image });
         onUsersListChanged();
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
@@ -110,9 +122,10 @@ function updateSubmitEvent() {
     document.querySelector("#form-update").onsubmit = async event => {
         event.preventDefault();
         const name = event.target.name.value;
+        const title = event.target.title.value;
         const mail = event.target.mail.value;
         const image = event.target.image.value;
-        await updateUser(selectedUserId, name, mail, image);
+        await updateUser({ id: selectedUserId, name, mail, title, image });
         onUsersListChanged();
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
