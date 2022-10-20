@@ -1,5 +1,7 @@
 // ====== REST SERVICE ("model") ====== //
-const endpoint = "http://localhost:3000";
+const isLocalhost = location.hostname === "localhost" || location.hostname === "127.0.0.1"
+const serverUrl = 'API_URL_HERE';
+const endpoint = isLocalhost ? 'http://localhost:3000' : serverUrl;
 
 // === READ (GET) === //
 async function getUsers() {
