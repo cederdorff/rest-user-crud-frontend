@@ -1,15 +1,17 @@
 // ====== REST SERVICE ("model") ====== //
-const isLocalhost = location.hostname === "localhost" || location.hostname === "127.0.0.1"
-const serverUrl = 'API_URL_HERE';
-const endpoint = isLocalhost ? 'http://localhost:3000' : serverUrl;
+const isLocalhost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const serverUrl = "API_URL_HERE";
+const endpoint = isLocalhost ? "http://localhost:3000" : serverUrl;
 
 // === READ (GET) === //
+// get all users
 async function getUsers() {
     const res = await fetch(`${endpoint}/users`);
     const users = await res.json();
     return users;
 }
 
+//get one  by given id
 async function getUser(id) {
     const res = await fetch(`${endpoint}/users/${id}`);
     const data = await res.json();
